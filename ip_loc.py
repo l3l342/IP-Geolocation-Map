@@ -1,3 +1,13 @@
+'''
+Made by Ben
+
+Api credits:
+    https://ipwhois.app/
+    free 10000 requests per month
+
+Have fun :)
+'''
+
 import urllib.request
 import pyshark
 import folium
@@ -13,6 +23,10 @@ class IpLocation:
         self.my_ip = None
 
     def scan_ips(self):
+        file = pyshark.LiveCapture(output_file="sample.pcap")
+        print("sniffing...")
+        file.sniff(1000)
+
         cap = pyshark.FileCapture("sample.pcap", only_summaries=True)
 
         for packet in cap:
