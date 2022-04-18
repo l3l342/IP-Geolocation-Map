@@ -34,7 +34,8 @@ class IpLocation:
                 self.ip.append(ip)
         return self.ip
 
-    def remove_double(self, double_ips):
+    @staticmethod
+    def remove_double(double_ips):
         ips = list(set(double_ips))
         return ips
 
@@ -60,6 +61,7 @@ def main():
     filtered_ip = iploc.filter_ips(ips)
 
     print("public ips: ", filtered_ip)
+    print(len(filtered_ip))
     print("bogon or privat ips: ", iploc.privat_or_bogon_ip)
 
     # map with geodata
@@ -67,9 +69,11 @@ def main():
 
     for ip in filtered_ip:
         data = iploc.ip_info(ip)
-        lat = data["latitude"]
-        long = data["longitude"]
-        folium.Marker(location=[lat, long], popup=ip, icon=folium.DivIcon(html=f"""<div style="font-family:Verdana; color:black">{ip}</div>""")).add_to(m)
+        print(ip)
+        if data["success"]:
+            lat = data["latitude"]
+            long = data["longitude"]
+            folium.Marker(location=[lat, long], popup=ip).add_to(m)
 
     data = iploc.ip_info("me")
     lat = data["latitude"]
@@ -80,6 +84,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# TODO:
-# schnellere ip informations api
