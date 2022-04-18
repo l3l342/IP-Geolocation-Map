@@ -10,7 +10,6 @@ Have fun :)
 
 import urllib.request
 import pyshark
-import folium
 from ipaddress import ip_address
 import json
 
@@ -25,6 +24,7 @@ class IpLocation:
     def scan_ips(self):
         file = pyshark.LiveCapture(output_file="sample.pcap")
         print("sniffing...")
+        print("make sure to have traffic")
         file.sniff(1000)
 
         cap = pyshark.FileCapture("sample.pcap", only_summaries=True)
@@ -32,7 +32,8 @@ class IpLocation:
         for packet in cap:
             line = str(packet)
             reformatting = line.split(" ")
-            self.ip_unsorted.append(reformatting[3])
+            self.ip_unsorted.append(reformatting[3])    #destination ip
+            self.ip_unsorted.append(reformatting[2])    #source ip
         cap.close()
         return self.ip_unsorted
 
@@ -65,36 +66,3 @@ class IpLocation:
             response = urllib.request.urlopen(req)
             data = json.load(response)
             return data
-
-
-def main():
-    iploc = IpLocation()
-
-    ip_scan = iploc.scan_ips()
-    ips = iploc.remove_double(ip_scan)
-    filtered_ip = iploc.filter_ips(ips)
-
-    print("public ips: ", filtered_ip)
-    print(len(filtered_ip))
-    print("bogon or privat ips: ", iploc.privat_or_bogon_ip)
-
-    # map with geodata
-    m = folium.Map(location=[52.374, 4.8897], zoom_start=2)
-
-    for ip in filtered_ip:
-        data = iploc.ip_info(ip)
-        print(ip)
-        if data["success"]:
-            lat = data["latitude"]
-            long = data["longitude"]
-            folium.Marker(location=[lat, long], popup=ip).add_to(m)
-
-    data = iploc.ip_info("me")
-    lat = data["latitude"]
-    long = data["longitude"]
-    folium.Marker(location=[lat, long], popup=f"""ME  {iploc.my_ip}""").add_to(m)
-    m.save("map.html")
-
-
-if __name__ == "__main__":
-    main()

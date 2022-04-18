@@ -1,5 +1,5 @@
 from ip_loc import *
-
+import folium
 
 def main():
     iploc = IpLocation()
