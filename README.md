@@ -10,3 +10,6 @@ View the IP-Geolocation of a Wireshark recording on a Map
 - folium
 - ipaddress 
 - json
+
+##Result
+- U will get a "map.html" file in the same directory, there will be the geolocation of ips in the wireshark recording displayed
