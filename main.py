@@ -1,7 +1,7 @@
 from ip_loc import *
 import folium
 
-def main:
+def main():
     iploc = IpLocation()
 
     ip_scan = iploc.scan_ips()
